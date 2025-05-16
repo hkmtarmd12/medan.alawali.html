@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مطاعم ومطابخ ميدان العوالي</title>
+  <style>
+    :root {
+      --primary-color: #4B2E2B;
+      --accent-color: #FF6F31;
+      --text-color: #333;
+      --bg-color: #f9f9f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      background-color: white;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 65px;
+      z-index: 999;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0.75rem 2rem;
+    }
+
+    nav button {
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    nav button.active {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    nav button:hover {
+      background-color: #ffe0cc;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 1rem;
+    }
+
+    .card-body h3 {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-body p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .card-footer {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .btn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #e85d2b;
+    }
+
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 1rem;
+      max-width: 600px;
+      width: 90%;
+      overflow: hidden;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      background: black;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>مطاعم ومطابخ ميدان العوالي</h1>
+    <span>مكة المكرمة</span>
+  </header>
+
+  <nav id="categories">
+    <button class="active" data-category="all">الكل</button>
+    <button data-category="meat">اللحوم</button>
+    <button data-category="chicken">الدجاج</button>
+    <button data-category="appetizers">المقبلات</button>
+    <button data-category="sides">الأطباق الجانبية</button>
+    <button data-category="desserts">الحلويات</button>
+    <button data-category="drinks">المشروبات</button>
+  </nav>
+
+  <main>
+    <h2 id="section-title">الكل</h2>
+    <div class="grid" id="menu-grid"></div>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> مطاعم ومطابخ ميدان العوالي | مكة المكرمة
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <img id="modal-image" src="" alt="">
+      <div class="modal-body">
+        <h3 id="modal-name"></h3>
+        <p id="modal-description"></p>
+        <p class="price" id="modal-price"></p>
+        <button class="btn mt-4 w-full">أضف إلى السلة</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuItems = [
+      {
+        id: 1,
+        name: "لحم مديني مكبوس",
+        description: " ارز بسمتي ابيض يطبخ بالمرقه وقليل من السمن  ",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/k4skRwJT/image.jpg"
+      },
+      {
+        id: 1,
+        name: "لحم كابلي ",
+        description: " ارز بسمتي احمر يحضر بخلطة اللبن والزعفران وقليل من ماء الكادي  ",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/QC2MW6t2/DSC00533.jpg"
+      },
+      {
+        id: 1,
+        name: "لحم بخاري",
+        description: " ارز بسمتي احمر يحضر بالطريقه البخاريه  التقليدية",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/Qx7VDQ1Y/1.png"
+      },
+      {
+        id: 1,
+        name: "لحم تركماني ",
+        description: " ارز امريكي , بخاري احمر يكشن بالزيت الزيتون  ",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/3x6kXch5/DSC00380.jpg"
+      },
+      {
+        id: 1,
+        name: "لحم  برياني",
+        description: " ارز بسمتي ابيض يطبخ بالمرقه وقليل من السمن  ",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/3x6kXch5/DSC00380.jpg"
+      
+      },
+      {
+        id: 1,
+        name: "أرز بالحمص لحم",
+        description: " ارز بسمتي ابيض يطبخ بالمرقه وقليل من السمن  ",
+        price: "69 ريال",
+        category: "meat",
+        image: "https://i.postimg.cc/3x6kXch5/DSC00380.jpg"
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج مديني ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "25 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/Fz2zQfHW/image.png "
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج مندي ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "24 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/XJv9Zkrw/DSC00390.jpg"
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج برياني ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "25 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/Fz2zQfHW/image.png "
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج مضغوط ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "24 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/bYmz8ccC/DSC00406.jpg "
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج مضبي ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "24 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/GtLGD0qg/DSC00405.jpg"
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج كابلي ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "24 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/xCDThKmK/DSC00392.jpg"
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج مثلوثة ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "28 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/59w5ygNF/DSC00540.jpg"
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج شواية ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "23 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/bw04RkTG/DSC00443.jpg "
+      },
+      {
+        id: 2,
+        name: " نص حبة دجاج كوزي ",
+        description: "دجاج مشوي مع بهارات تقليدية",
+        price: "25.50 ريال",
+        category: "chicken",
+        image: "https://i.postimg.cc/NGSjTkyQ/DSC00372.jpg"
+      }, 
+      {
+        id: 3,
+        name: "  جرجير ",
+        description: "السعرات الحرارية 20",
+        price: "12 ريال",
+        category: "appetizers",
+        image: "https://i.postimg.cc/jd3TBGnH/image.png"
+      },
+      {
+        id: 3,
+        name: "تبولة",
+        description: "السعرات الحرارية 20",
+        price: "8 ريال",
+        category: "appetizers",
+        image: "https://i.postimg.cc/Wpr5JKv2/image.png"
+      },
+      {
+        id: 3,
+        name: "حمص",
+        description: "السعرات الحرارية 20",
+        price: "8 ريال",
+        category: "appetizers",
+        image: "https://i.postimg.cc/WpZmtkPC/image.png"
+      },
+      {
+        id: 3,
+        name: "فتوش",
+        description: "السعرات الرارية 20     ",
+        price: "10 ريال",
+        category: "appetizers",
+        image: "https://i.postimg.cc/DzgL2sJs/DSC00493-1.png"
+      },
+      {
+        id: 4,
+        name: " جريش",
+        description: "السعرات الحرارية 40",
+        price: "10 ريال",
+        category: "sides",
+        image: "https://i.postimg.cc/bYxxLs9K/DSC00458.png "
+      },
+      {
+        id: 4,
+        name: " قرصان",
+        description: "السعرات الحرارية 35",
+        price: "10 ريال",
+        category: "sides",
+        image: "https://i.postimg.cc/SsMtsk8c/DSC00465.png"
+      },
+      {
+        id: 4,
+        name: " سمبوسك لحم",
+        description: "السعرات الحرارية 15",
+        price: "1.50 ريال",
+        category: "sides",
+        image: "https://i.postimg.cc/pLvDCN0Z/2025-05-16-144420.png"
+      },
+      {
+        id: 5,
+        name: "كنـافة بالقشطة",
+        description: "حلوى كريمية بنكهة الفانيليا والكراميل",
+        price: "8 ريال",
+        category: "desserts",
+        image: "https://i.postimg.cc/6pR8hhp8/image.png "
+      },
+      {
+        id: 5,
+        name: "كنـافة اكسترا",
+        description: "حلوى كريمية بنكهة الفانيليا والكراميل",
+        price: "10 ريال",
+        category: "desserts",
+        image: "https://i.postimg.cc/YC6wbcSr/DSC00497.png "
+      },
+      {
+        id: 5,
+        name: " حلا السرايا",
+        description: "حلوى كريمية بنكهة الفانيليا والكراميل",
+        price: "8 ريال",
+        category: "desserts",
+        image: "https://i.postimg.cc/MTqQL8xz/DSC00488.png"
+      },
+      {
+        id: 5,
+        name: " طرمبة ",
+        description: "حلوى كريمية بنكهة الفانيليا والكراميل",
+        price: "1.50 ريال",
+        category: "desserts",
+        image: "https://i.postimg.cc/1RCZ4c8H/image.png"
+      },
+      {
+        id: 6,
+        name: " المشروبات الغازية",
+        description: "شاي ميرندا برتقال  سفن دايت ببسي حمضيات",
+        price: "3 ريال",
+        category: "drinks",
+        image: "https://i.postimg.cc/W1jFMNdN/2025-05-16-143426.png "
+      },
+      {
+        id: 6,
+        name: "لبن المراعي ",
+        description: "  السعرات الحرارية 20",
+        price: "2 ريال",
+        category: "drinks",
+        image: "https://i.postimg.cc/pTcTRm3X/2025-05-16-135514.png"
+      },
+      {
+        id: 6,
+        name: "مياة صحية",
+        description: " السعرات الحرارية 0",
+        price: "1 ريال",
+        category: "drinks",
+        image: "https://i.postimg.cc/Qx5S8J9F/2025-05-16-144037.png "
+      },
+      {
+        id: 6,
+        name: "لبن القريه ",
+        description: "السعرات الحرارية 47",
+        price: "3 ريال",
+        category: "drinks",
+        image: "https://i.postimg.cc/HL19fDvj/2025-05-16-143008.png"
+      }
+    ];
+
+    const categories = [
+      { key: "all", label: "الصفحة الرئيسية" },
+      { key: "meat", label: "اللحوم" },
+      { key: "chicken", label: "الدجاج" },
+      { key: "appetizers", label: "المقبلات" },
+      { key: "sides", label: "الأطباق الجانبية" },
+      { key: "desserts", label: "الحلويات" },
+      { key: "drinks", label: "المشروبات" }
+    ];
+
+    const grid = document.getElementById('menu-grid');
+    const modal = document.getElementById('modal');
+    const modalName = document.getElementById('modal-name');
+    const modalDesc = document.getElementById('modal-description');
+    const modalPrice = document.getElementById('modal-price');
+    const modalImage = document.getElementById('modal-image');
+    const closeBtn = document.querySelector('.close-btn');
+    const sectionTitle = document.getElementById('section-title');
+
+    let activeCategory = 'all';
+
+    function filterMenu() {
+      grid.innerHTML = '';
+      const filtered = activeCategory === 'all' ? menuItems : menuItems.filter(item => item.category === activeCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-center py-4">لا توجد عناصر لهذه الفئة</p>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="card-body">
+            <h3><span>🍽</span> ${item.name}</h3>
+            <p>${item.description}</p>
+            <div class="card-footer">
+              <span class="price">${item.price}</span>
+              <button class="btn view-btn">عرض</button>
+            </div>
+          </div>
+        `;
+        card.querySelector('.view-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          showModal(item);
+        });
+        card.addEventListener('click', () => showModal(item));
+        grid.appendChild(card);
+      });
+
+      // تحديث العنوان
+      const cat = categories.find(c => c.key === activeCategory);
+      sectionTitle.textContent = cat ? cat.label : 'القائمة';
+    }
+
+    function showModal(item) {
+      modalName.textContent = item.name;
+      modalDesc.textContent = item.description;
+      modalPrice.textContent = item.price;
+      modalImage.src = item.image;
+      modal.style.display = 'flex';
+    }
+
+    function hideModal() {
+      modal.style.display = 'none';
+    }
+
+    document.querySelectorAll('nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCategory = btn.getAttribute('data-category');
+        filterMenu();
+      });
+    });
+
+    closeBtn.addEventListener('click', hideModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) hideModal();
+    });
+
+    window.onload = () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      filterMenu();
+    };
+  </script>
+
+</body>
+</html>
